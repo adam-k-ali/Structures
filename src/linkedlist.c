@@ -1,204 +1,293 @@
+/*
+ * Author: Adam Ali
+ * Date: 3/12/2022
+ * 
+ * This file contains the implementation of the linked list data structure.
+*/
+
 #include <stddef.h>
 #include <stdlib.h>
+#include <string.h>
 #include "linkedlist.h"
 
 /*
- * Returns the size of the linked list
- *
+ * Function: create_linkedlist
+ * ----------------------------
+ *  Creates a new linked list.
+ * 
+ * returns: a pointer to the newly created linked list
 */
-int size(struct node *head) {
-    struct node *tmp = head;
-    int count = 0;
-    while (tmp != NULL) {
-        count++;
-        tmp = tmp->next;
-    }
-    return count;
+struct linkedlist *create_linkedlist() {
+    struct linkedlist *list = malloc(sizeof(struct linkedlist));
+    list->head = NULL;
+    list->tail = NULL;
+    return list;
 }
 
 /*
-* Returns true if the linked list is empty, false otherwise
+ * Function: size
+ * ----------------------------
+ * Get the size of the linked list
+ * 
+ * list: the linked list
+ * 
+ * returns: the size of the linked list
 */
-bool empty(struct node *head) {
-    return head == NULL;
+size_t size(struct linkedlist *list) {
+    size_t size = 0;
+    struct node *current = list->head;
+    while (current != NULL) {
+        size++;
+        current = current->next;
+    }
+    return size;
 }
 
 /*
-* Find the value at a given index.
-* Returns an error code or 0.
+ * Function: empty
+ * ----------------------------
+ * Check if the linked list is empty
+ * 
+ * list: the linked list
+ * 
+ * returns: true if the linked list is empty, false otherwise
 */
-int value_at(struct node *head, int i, int *result) {
-    // Check if i > size(head)
-    if (i > size(head) - 1) {
-        return -1;
-    }
-    // Check if i < 0
-    if (i < 0) {
-        return -1;
-    }
-
-    // Iterate through the list until i == 0
-    struct node *tmp = head;
-    while (tmp != NULL && i > 0) {
-        i--;
-        tmp = tmp->next;
-    }
-    *result = tmp->data;
-    return 0;
+bool empty(struct linkedlist *list) {
+    return list->head == NULL;
 }
 
 /*
-* Adds a value to the front of the list
+ * Function: value_at
+ * ----------------------------
+ * Get the value at the given index
+ * 
+ * list: the linked list
+ * i: the index
+ * 
+ * returns: the value at the given index
 */
-void push_front(struct node **head, int value) {
-    struct node* new_node = malloc(sizeof(struct node));
-    new_node->data = value;
-    new_node->next = *head;
-    *head = new_node;
+void *value_at(struct linkedlist *list, int i) {
+    struct node *current = list->head;
+    int index = 0;
+    while (current != NULL) {
+        if (index == i) {
+            return current->data;
+        }
+        index++;
+        current = current->next;
+    }
+    return NULL;
 }
 
-/*
-* Removes the value at the front of the list
-* Returns an error code or 0.
-*/
-int pop_front(struct node **head, int *result) {
-    if (empty(*head)) {
-        return -1;
-    }
-    struct node *tmp = *head;
-    *result = tmp->data;
-
-    if (tmp->next == NULL) {
-        *head = NULL;
-    } else {
-        *head = tmp->next;
-    }
-    free(tmp);
-    return 0;
-}
 
 /*
-* Adds a value to the end of the list
+ * Function: push_front
+ * ----------------------------
+ * Add a value to the front of the linked list
+ * 
+ * list: the linked list
+ * value: the value to add
 */
-void push_back(struct node **head, int value) {
+void push_front(struct linkedlist *list, void *value) {
     struct node *new_node = malloc(sizeof(struct node));
     new_node->data = value;
-    if (empty(*head)) {
-        *head = new_node;
-    } else {
-        struct node *tmp = *head;
-        while (tmp->next != NULL) {
-            tmp = tmp->next;
-        }
-        tmp->next = new_node;
-    }
+    new_node->next = list->head;
+    list->head = new_node;
 }
 
 /*
-* Removes the value at the end of the list
-* Returns an error code or 0.
+ * Function: pop_front
+ * ----------------------------
+ * Remove the first value from the linked list
+ * 
+ * list: the linked list
+ * 
+ * returns: 0 if successful, -1 otherwise
 */
-int pop_back(struct node **head, int *result) {
-    if (empty(*head)) {
+int pop_front(struct linkedlist *list) {
+    if (list->head == NULL) {
         return -1;
     }
-    struct node *tmp = *head;
-    if (tmp->next == NULL) {
-        *result = tmp->data;
-        *head = NULL;
-        free(tmp);
-    } else {
-        while (tmp->next->next != NULL) {
-            tmp = tmp->next;
-        }
-        *result = tmp->next->data;
-        free(tmp->next);
-        tmp->next = NULL;
-    }
+    struct node *temp = list->head;
+    list->head = list->head->next;
+    free(temp);
     return 0;
 }
 
 /*
-* Returns the value of the front element
-* Returns an error code or 0.
+ * Function: push_back
+ * ----------------------------
+ * Add a value to the back of the linked list
+ * 
+ * list: the linked list
+ * value: the value to add
 */
-int front(struct node *head, int *result) {
-    if (empty(head)) {
+void push_back(struct linkedlist *list, void *value) {
+    struct node *new_node = malloc(sizeof(struct node));
+    new_node->data = value;
+    new_node->next = NULL;
+    if (list->head == NULL) {
+        list->head = new_node;
+        list->tail = new_node;
+    } else {
+        list->tail->next = new_node;
+        list->tail = new_node;
+    }
+}
+
+/*
+ * Function: pop_back
+ * ----------------------------
+ * Remove the last value from the linked list
+ * 
+ * list: the linked list
+ * 
+ * returns: 0 if successful, -1 otherwise
+*/
+int pop_back(struct linkedlist *list) {
+    if (list->head == NULL) {
         return -1;
     }
-    *result = head->data;
+    struct node *current = list->head;
+    while (current->next != list->tail) {
+        current = current->next;
+    }
+    free(list->tail);
+    list->tail = current;
+    list->tail->next = NULL;
     return 0;
 }
 
-int back(struct node *head, int *result) {
-    if (empty(head)) {
-        return -1;
+/*
+ * Function: front
+ * ----------------------------
+ * Get the first value in the linked list
+ * 
+ * list: the linked list
+ * 
+ * returns: the first value in the linked list
+*/
+void *front(struct linkedlist *list) {
+    if (list->head == NULL) {
+        return NULL;
     }
-    // Move to the end of the list
-    struct node *tmp = head;
-    while (tmp->next != NULL) {
-        tmp = tmp->next;
-    }
-    *result = tmp->data;
-    return 0;
+    return list->head->data;
 }
 
-int insert(struct node **head, int i, int value) {
-    if (i > size(*head)) {
-        return -1;
+/*
+ * Function: back
+ * ----------------------------
+ * Get the last value in the linked list
+ * 
+ * list: the linked list
+ * 
+ * returns: the last value in the linked list
+*/
+void *back(struct linkedlist *list) {
+    if (list->tail == NULL) {
+        return NULL;
     }
+    return list->tail->data;
+}
+
+/*
+ * Function: insert
+ * ----------------------------
+ * Insert a value at the given index
+ * 
+ * list: the linked list
+ * i: the index
+ * value: the value to insert
+*/
+void insert(struct linkedlist *list, int i, void *value) {
     struct node *new_node = malloc(sizeof(struct node));
     new_node->data = value;
     if (i == 0) {
-        new_node->next = *head;
-        *head = new_node;
+        new_node->next = list->head;
+        list->head = new_node;
     } else {
-        struct node *tmp = *head;
-        while (i > 1) {
-            i--;
-            tmp = tmp->next;
+        struct node *current = list->head;
+        int index = 0;
+        while (current != NULL) {
+            if (index == i - 1) {
+                new_node->next = current->next;
+                current->next = new_node;
+                break;
+            }
+            index++;
+            current = current->next;
         }
-        new_node->next = tmp->next;
-        tmp->next = new_node;
     }
-    return 0;
 }
 
-int erase(struct node *head, int i) {
-    if (i > size(head)) {
+/*
+ * Function: erase
+ * ----------------------------
+ * Remove the value at the given index
+ * 
+ * list: the linked list
+ * i: the index
+ * 
+ * returns: 0 if successful, -1 otherwise
+*/
+int erase(struct linkedlist *list, int i) {
+    if (list->head == NULL) {
         return -1;
     }
     if (i == 0) {
-        // Hold the node to replace in a temporary variable
-        struct node *tmp = head;
-        // Replace the node with the next node
-        head = head->next;
-        // Free the memory
-        free(tmp);
+        struct node *temp = list->head;
+        list->head = list->head->next;
+        free(temp);
     } else {
-        // Move to the node before the one to be deleted
-        struct node *tmp = head;
-        while (i > 1) {
-            i--;
-            tmp = tmp->next;
+        struct node *current = list->head;
+        int index = 0;
+        while (current != NULL) {
+            if (index == i - 1) {
+                struct node *temp = current->next;
+                current->next = current->next->next;
+                free(temp);
+                break;
+            }
+            index++;
+            current = current->next;
         }
-        // Hold the node to replace in a temporary variable
-        struct node *tmp2 = tmp->next;
-        // Replace the node
-        tmp->next = tmp->next->next;
-        // Free the memory
-        free(tmp2);
     }
     return 0;
 }
 
-int value_n_from_end(struct node *head, int n, int *result) {
-    return value_at(head, size(head) - (n + 1), result);
+/*
+ * Function: value_n_from_end
+ * ----------------------------
+ * Get the value at the given index from the end
+ * 
+ * list: the linked list
+ * n: the index from the end
+ * 
+ * returns: the value at the given index from the end, NULL if the index is out of bounds
+*/
+void *value_n_from_end(struct linkedlist *list, int n) {
+    struct node *current = list->head;
+    int index = 0;
+    while (current != NULL) {
+        if (index == size(list) - n - 1) {
+            return current->data;
+        }
+        index++;
+        current = current->next;
+    }
+    return NULL;
 }
 
-void reverse(struct node **head) {
+/*
+ * Function: reverse
+ * ----------------------------
+ * Reverse the linked list
+ * 
+ * list: the linked list
+*/
+void reverse(struct linkedlist *list) {
+    struct node *current = list->head;
     struct node *prev = NULL;
-    struct node *current = *head;
     struct node *next = NULL;
     while (current != NULL) {
         next = current->next;
@@ -206,33 +295,38 @@ void reverse(struct node **head) {
         prev = current;
         current = next;
     }
-    *head = prev;
+    list->head = prev;
 }
 
 /*
-Removes the first node with the given value
-Returns an error code or 0.
-Error code -1: The list is empty
-Error code -2: The value is not in the list
+ * Function: remove_value
+ * ----------------------------
+ * Remove the first instance of the given value
+ * 
+ * list: the linked list
+ * value: the value to remove
+ * 
+ * returns: 0 if successful, -1 otherwise
 */
-int remove_value(struct node **head, int value) {
-    if (empty(*head)) {
-        return -1;
-    }
-    struct node *tmp = *head;
-    if (tmp->data == value) {
-        *head = tmp->next;
-        free(tmp);
+int remove_value(struct linkedlist *list, void *value) {
+    if (empty(list)) {
         return 0;
     }
-    while (tmp->next != NULL) {
-        if (tmp->next->data == value) {
-            struct node *tmp2 = tmp->next;
-            tmp->next = tmp->next->next;
-            free(tmp2);
-            return 0;
+
+    struct node *current = list->head;
+    struct node *prev = NULL;
+    while (current != NULL) {
+        if (strcmp(current->data, value) == 0) {
+            if (current == list->head) {
+                list->head = list->head->next;
+            } else {
+                prev->next = current->next;
+            }
+            free(current);
+            return 1;
         }
-        tmp = tmp->next;
+        prev = current;
+        current = current->next;
     }
-    return -2;
+    return 0;
 }

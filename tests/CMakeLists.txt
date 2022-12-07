@@ -1,0 +1,15 @@
+# Author: Adam Ali
+# Date: 03/12/2022
+# Description: The CMakeLists.txt to setup tests for the project
+set(BINARY ${CMAKE_PROJECT_NAME}_test)
+
+file(GLOB_RECURSE TEST_SOURCES LIST_DIRECTORIES false *.h *.cpp *.c)
+
+set(SOURCES ${TEST_SOURCES})
+
+add_executable(${BINARY} ${TEST_SOURCES})
+add_test(NAME ${BINARY} COMMAND ${BINARY})
+target_link_libraries(${BINARY} PUBLIC
+    ${CMAKE_PROJECT_NAME}_lib
+    gtest_main
+)

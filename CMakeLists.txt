@@ -1,16 +1,12 @@
-cmake_minimum_required(VERSION 3.0.0)
-project(DataStructures VERSION 0.1.0)
+# Author: Adam Ali
+# Date: 03/12/2022
+# Description: The root CMakeLists.txt file for the project.
+cmake_minimum_required(VERSION 3.10)
+project(DSLib)
 
-include(CTest)
-enable_testing()
+set(CMAKE_CXX_STANDARD 14)
 
-# Include 'include' directory
-include_directories(include)
-FILE(GLOB_RECURSE SOURCES "src/*.c")
-
-# Execute with the --test flag
-add_executable(DataStructures ${SOURCES})
-
-set(CPACK_PROJECT_NAME ${PROJECT_NAME})
-set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
-include(CPack)
+include_directories(src)
+add_subdirectory(src)
+add_subdirectory(tests)
+add_subdirectory(lib/googletest)
