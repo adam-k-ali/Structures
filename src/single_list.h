@@ -34,34 +34,34 @@ struct node {
  * head: a pointer to the head of the linked list
  * tail: a pointer to the tail of the linked list
  */
-struct linkedlist {
+typedef struct single_list {
     struct node *head;
     struct node *tail;
-};
+} single_list;
 
-struct linkedlist *create_linkedlist();
+single_list *create_single_list();
 
-size_t size(struct linkedlist *list);
-bool empty(struct linkedlist *list);
+size_t size(single_list *list);
+bool empty(single_list *list);
 
-void *value_at(struct linkedlist *list, int i);
+void *value_at(single_list *list, int i);
 
-void push_front(struct linkedlist *list, void *value);
-int pop_front(struct linkedlist *list);
+void push_front(single_list *list, void *value);
+int pop_front(single_list *list);
 
-void push_back(struct linkedlist *list, void *value);
-int pop_back(struct linkedlist *list);
+void push_back(single_list *list, void *value);
+int pop_back(single_list *list);
 
-void *front(struct linkedlist *list);
-void *back(struct linkedlist *list);
+void *front(single_list *list);
+void *back(single_list *list);
 
-void insert(struct linkedlist *list, int i, void *value);
-int erase(struct linkedlist *list, int i);
+void insert(single_list *list, int i, void *value);
+int erase(single_list *list, int i);
 
-void *value_n_from_end(struct linkedlist *list, int n);
+void *value_n_from_end(single_list *list, int n);
 
-void reverse(struct linkedlist *list);
-int remove_value(struct linkedlist *list, void *value);
+void reverse(single_list *list);
+int remove_value(single_list *list, void *value);
 
 #ifdef __cplusplus
 }

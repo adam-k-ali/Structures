@@ -8,17 +8,17 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
-#include "linkedlist.h"
+#include "single_list.h"
 
 /*
- * Function: create_linkedlist
+ * Function: create_single_list
  * ----------------------------
- *  Creates a new linked list.
+ *  Creates a new singly-linked list
  * 
  * returns: a pointer to the newly created linked list
 */
-struct linkedlist *create_linkedlist() {
-    struct linkedlist *list = malloc(sizeof(struct linkedlist));
+single_list *create_single_list() {
+    single_list *list = malloc(sizeof(single_list));
     list->head = NULL;
     list->tail = NULL;
     return list;
@@ -33,7 +33,7 @@ struct linkedlist *create_linkedlist() {
  * 
  * returns: the size of the linked list
 */
-size_t size(struct linkedlist *list) {
+size_t size(single_list *list) {
     size_t size = 0;
     struct node *current = list->head;
     while (current != NULL) {
@@ -52,7 +52,7 @@ size_t size(struct linkedlist *list) {
  * 
  * returns: true if the linked list is empty, false otherwise
 */
-bool empty(struct linkedlist *list) {
+bool empty(single_list *list) {
     return list->head == NULL;
 }
 
@@ -66,7 +66,7 @@ bool empty(struct linkedlist *list) {
  * 
  * returns: the value at the given index
 */
-void *value_at(struct linkedlist *list, int i) {
+void *value_at(single_list *list, int i) {
     struct node *current = list->head;
     int index = 0;
     while (current != NULL) {
@@ -88,7 +88,7 @@ void *value_at(struct linkedlist *list, int i) {
  * list: the linked list
  * value: the value to add
 */
-void push_front(struct linkedlist *list, void *value) {
+void push_front(single_list *list, void *value) {
     struct node *new_node = malloc(sizeof(struct node));
     new_node->data = value;
     new_node->next = list->head;
@@ -104,7 +104,7 @@ void push_front(struct linkedlist *list, void *value) {
  * 
  * returns: 0 if successful, -1 otherwise
 */
-int pop_front(struct linkedlist *list) {
+int pop_front(single_list *list) {
     if (list->head == NULL) {
         return -1;
     }
@@ -122,7 +122,7 @@ int pop_front(struct linkedlist *list) {
  * list: the linked list
  * value: the value to add
 */
-void push_back(struct linkedlist *list, void *value) {
+void push_back(single_list *list, void *value) {
     struct node *new_node = malloc(sizeof(struct node));
     new_node->data = value;
     new_node->next = NULL;
@@ -144,7 +144,7 @@ void push_back(struct linkedlist *list, void *value) {
  * 
  * returns: 0 if successful, -1 otherwise
 */
-int pop_back(struct linkedlist *list) {
+int pop_back(single_list *list) {
     if (list->head == NULL) {
         return -1;
     }
@@ -167,7 +167,7 @@ int pop_back(struct linkedlist *list) {
  * 
  * returns: the first value in the linked list
 */
-void *front(struct linkedlist *list) {
+void *front(single_list *list) {
     if (list->head == NULL) {
         return NULL;
     }
@@ -183,7 +183,7 @@ void *front(struct linkedlist *list) {
  * 
  * returns: the last value in the linked list
 */
-void *back(struct linkedlist *list) {
+void *back(single_list *list) {
     if (list->tail == NULL) {
         return NULL;
     }
@@ -199,7 +199,7 @@ void *back(struct linkedlist *list) {
  * i: the index
  * value: the value to insert
 */
-void insert(struct linkedlist *list, int i, void *value) {
+void insert(single_list *list, int i, void *value) {
     struct node *new_node = malloc(sizeof(struct node));
     new_node->data = value;
     if (i == 0) {
@@ -230,7 +230,7 @@ void insert(struct linkedlist *list, int i, void *value) {
  * 
  * returns: 0 if successful, -1 otherwise
 */
-int erase(struct linkedlist *list, int i) {
+int erase(single_list *list, int i) {
     if (list->head == NULL) {
         return -1;
     }
@@ -265,7 +265,7 @@ int erase(struct linkedlist *list, int i) {
  * 
  * returns: the value at the given index from the end, NULL if the index is out of bounds
 */
-void *value_n_from_end(struct linkedlist *list, int n) {
+void *value_n_from_end(single_list *list, int n) {
     struct node *current = list->head;
     int index = 0;
     while (current != NULL) {
@@ -285,7 +285,7 @@ void *value_n_from_end(struct linkedlist *list, int n) {
  * 
  * list: the linked list
 */
-void reverse(struct linkedlist *list) {
+void reverse(single_list *list) {
     struct node *current = list->head;
     struct node *prev = NULL;
     struct node *next = NULL;
@@ -308,7 +308,7 @@ void reverse(struct linkedlist *list) {
  * 
  * returns: 0 if successful, -1 otherwise
 */
-int remove_value(struct linkedlist *list, void *value) {
+int remove_value(single_list *list, void *value) {
     if (empty(list)) {
         return 0;
     }
